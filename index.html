@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title> K-Nearest Neighbor (KNN) - Pattern Recognition </title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<h2>K-Nearest Neighbor (KNN) - Pattern Recognition</h2>
+<h4>Click on the grey area to create new cirles and see how their color changes based on their neighbors.</h4>
+<div class="settings">
+  <span class="settings__group">
+    <label for="k">Amount of neighbors, k: <span id='k-pl'>3</span></label>
+    <input type="range" id="k" name="k" min="1" max="150" value="3" step="1"/>
+  </span>
+  <span class="settings__group">
+    <label for="n">Initial amount of circles, n: <span id="n-pl">200</span></label>
+    <input type="range" id="n" name="n" min="10" max="5000" value="200" step="10"/>
+  </span>
+  <span class="settings__group">
+    <label for="weighted">Weighted (by inverse distance):</label>
+    <input type="checkbox" id="weighted" name="weighted"/>
+  </span>
+</div>
+<svg class="knn"></svg>
+<div class="description">
+<p>
+  In the visualization you can see how the <strong>k-nearest neighbor (KNN)</strong> algorithm
+  <strong>classifies</strong> new data points based on their <strong>k</strong> nearest neighbors, where the amount of neighbors k is specified using the slider above. The new point will be assigned the <strong>class</strong> that the majority of its k nearest neighbors hold.
+  <br><br>
+  The initial circles are our "training" data set. The data set is divided into two classes: <strong>green and purple</strong>.
+  When we add a new circle, we want to find out which class (aka color) we need to assign it to, depending on its neighbors.
+  <br><br>
+  What's going on behind the scenes after you add a circle:
+</p>
+<ol>
+  <li>The algorithm goes through all other circles and calculates their distance from your new circle.</li>
+  <li>It then sorts them by distance from your circle in ascending order, meaning the circles with the smallest distances to the new circle come first.</li>
+  <li>It picks the first k entries from the result of step 2.</li>
+  <li>It looks at the k nearest neighbors' classes. If the majority of them are purple, our new point will be purple as well. If most of them are green, then the new point will be green.</li>
+</ol>
+<h3>The weighted KNN</h3>
+<p>
+  If you check the <strong>"Weighted" checkbox</strong> above, the algorithm is justified, so that the <strong>inverse of the distance</strong> of the k neighbors is taken into account. This is important during "ties", meaning that you chose an even amount of neighbors k and half of them are class green while the other half are purple. 
+  If you don't use the weighted version of KNN in this case, the neighbor with the closest distance will <strong>ALWAYS</strong> win, so that your circle will take on its color. 
+<p>
+<h4>Let's look at an example:</h4>
+<p>
+  Imagine you chose <strong>k=4</strong> and the nearest neighbors are <strong>[(Purple,2), (Purple,500), (Green,3), (Green,4)]</strong>, where the numbers represent the distances from the new circle. In the unweighted KNN, the nearest neighbor's class - in this case Purple - would automatically win. But look at the distances: The two green circles are much closer to the new circle than the second purple circle. It might not be the right decision to just go on the closest circle and not take the others into account!
+<br><br>
+    When using the <strong>weighted KNN</strong>, the way of determining which class to assign to the new circle is different:<br>
+  The weighted KNN sums up the <strong>inverted distance</strong> of all the nearest neighbors belonging to the <strong>same class</strong>. It then checks which of the classes' <strong>sums is the greatest</strong> and assigns the corresponding class to the new circle.<br><br>
+  In our example the weights of the classes are:
+</p>
+<ul>
+  <li>Weight of Purple = 1/2 + 1/500 = 0.502</li>
+  <li>Weight of Green = 1/3 + 1/4 = 0.583</li>
+</ul>
+<p>
+Written By Isaac Tumwine
+</p>
+</div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js'></script><script  src="./script.js"></script>
+
+</body>
+</html>
